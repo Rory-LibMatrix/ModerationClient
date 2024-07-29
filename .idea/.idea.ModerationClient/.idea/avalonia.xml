@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AvaloniaProject">
+    <option name="projectPerEditor">
+      <map>
+        <entry key="ModerationClient/App.axaml" value="ModerationClient/ModerationClient.csproj" />
+        <entry key="ModerationClient/Views/ClientView.axaml" value="ModerationClient/ModerationClient.csproj" />
+        <entry key="ModerationClient/Views/LoginView.axaml" value="ModerationClient/ModerationClient.csproj" />
+        <entry key="ModerationClient/Views/LoginWindow.axaml" value="ModerationClient/ModerationClient.csproj" />
+        <entry key="ModerationClient/Views/MainWindow.axaml" value="ModerationClient/ModerationClient.csproj" />
+        <entry key="ModerationClient/Windows/LoginWindow.axaml" value="ModerationClient/ModerationClient.csproj" />
+      </map>
+    </option>
+  </component>
+</project>

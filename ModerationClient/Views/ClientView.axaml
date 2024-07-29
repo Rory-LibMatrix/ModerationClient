@@ -1,0 +1,30 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:views="clr-namespace:ModerationClient.Views"
+             xmlns:viewModels="clr-namespace:ModerationClient.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="ModerationClient.Views.ClientView"
+             x:DataType="viewModels:ClientViewModel">
+    <Grid Width="{Binding $parent.Width}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="128" MinWidth="16" />
+            <ColumnDefinition Width="1" />
+            <ColumnDefinition Width="128" MinWidth="16" />
+            <ColumnDefinition Width="1" />
+            <ColumnDefinition Width="*" MinWidth="16" />
+        </Grid.ColumnDefinitions>
+        <TreeView Grid.Column="0" Background="Red" ItemsSource="{CompiledBinding DisplayedSpaces}">
+            <TreeView.ItemTemplate>
+                <TreeDataTemplate ItemsSource="{Binding Children}">
+                    <TextBlock Text="{Binding Name}" />
+                </TreeDataTemplate>
+            </TreeView.ItemTemplate>
+        </TreeView>
+        <GridSplitter Grid.Column="1" Background="Black" ResizeDirection="Columns" />
+        <Rectangle Grid.Column="2" Fill="Green" />
+        <GridSplitter Grid.Column="3" Background="Black" ResizeDirection="Columns" />
+        <Rectangle Grid.Column="4" Fill="Blue" />
+    </Grid>
+</UserControl>
