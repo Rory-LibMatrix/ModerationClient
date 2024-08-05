@@ -44,8 +44,8 @@ public class MatrixAuthenticationService(ILogger<MatrixAuthenticationService> lo
         var mxidParts = username.Split(':', 2);
         var res = await hsProvider.Login(mxidParts[1], username, password);
         await File.WriteAllTextAsync(Path.Combine(cfg.ProfileDirectory, "login.json"), res.ToJson());
-        IsLoggedIn = true;
 
+        await LoadProfileAsync();
         // Console.WriteLine("Login result: " + res.ToJson());
     }
 

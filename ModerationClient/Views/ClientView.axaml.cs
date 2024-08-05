@@ -1,5 +1,3 @@
-using System;
-using System.Linq;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
@@ -25,9 +23,5 @@ public partial class ClientView : UserControl {
         //         }
         //     }
         // };
-    }
-    
-    private void InitializeComponent() {
-        AvaloniaXamlLoader.Load(this);
     }
 }
