@@ -30,6 +30,7 @@ public partial class ClientViewModel : ViewModelBase {
     private readonly CommandLineConfiguration _cfg;
     private SpaceNode? _currentSpace;
     private readonly SpaceNode _allRoomsNode;
+    private string _status = "Loading...";
     public ObservableCollection<SpaceNode> DisplayedSpaces { get; } = [];
     public ObservableDictionary<string, RoomNode> AllRooms { get; } = new();
 
@@ -38,12 +39,22 @@ public partial class ClientViewModel : ViewModelBase {
         set => SetProperty(ref _currentSpace, value);
     }
 
+    public string Status {
+        get => _status + " " + DateTime.Now;
+        set => SetProperty(ref _status, value);
+    }
+
     public async Task Run() {
+        Status = "Interrupted.";
+        return;
+        Status = "Doing initial sync...";
         var sh = new SyncStateResolver(_authService.Homeserver, _logger, storageProvider: new FileStorageProvider(Path.Combine(_cfg.ProfileDirectory, "syncCache")));
         // var res = await sh.SyncAsync();
         //await sh.OptimiseStore();
         while (true) {
+            // Status = "Syncing...";
             var res = await sh.ContinueAsync();
+            Status = $"Processing sync... {res.next.NextBatch}";
             await ApplySpaceChanges(res.next);
             //OnPropertyChanged(nameof(CurrentSpace));
             //OnPropertyChanged(nameof(CurrentSpace.ChildRooms));
@@ -52,6 +63,7 @@ public partial class ClientViewModel : ViewModelBase {
             // GC.Collect(i, GCCollectionMode.Forced, blocking: true);
             // GC.WaitForPendingFinalizers();
             // }
+            Status = "Syncing...";
         }
     }
 
@@ -72,7 +84,7 @@ public partial class ClientViewModel : ViewModelBase {
             }
         }
         
-        // await Task.WhenAll(tasks);
+        await Task.WhenAll(tasks);
 
         return;
 

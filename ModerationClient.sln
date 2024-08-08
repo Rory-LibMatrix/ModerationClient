@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# 
+#
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModerationClient", "ModerationClient\ModerationClient.csproj", "{18FFCA62-0CA3-4B24-8708-8EE5C5BBDE41}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LibMatrix", "LibMatrix", "{C5771E60-0DA8-42AC-B54B-94C91B5B719B}"
@@ -152,5 +152,9 @@ Global
 		{277ED4E3-5987-450C-B82F-67AD0AAA19F1} = {D7A5A7D3-4D9E-4B15-9C48-5E75A91483CF}
 		{F9BA709C-DA10-4416-A07D-C89293FB0D24} = {D7A5A7D3-4D9E-4B15-9C48-5E75A91483CF}
 		{046D35DF-E1F2-41DA-94D3-80CF960C100A} = {D7A5A7D3-4D9E-4B15-9C48-5E75A91483CF}
+	EndGlobalSection
+	GlobalSection(RiderSharedRunConfigurations) = postSolution
+		File = .run\local\ModerationClient (Apothecary) test.run.xml
+		File = .run\local\ModerationClient (Apothecary).run.xml
 	EndGlobalSection
 EndGlobal

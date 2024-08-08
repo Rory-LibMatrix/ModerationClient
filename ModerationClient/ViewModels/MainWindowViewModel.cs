@@ -1,14 +1,16 @@
 ﻿using System;
+using Avalonia;
 using ModerationClient.Services;
 using ModerationClient.Views;
 
 namespace ModerationClient.ViewModels;
 
 public partial class MainWindowViewModel(MatrixAuthenticationService authService, CommandLineConfiguration cfg) : ViewModelBase {
-    public MainWindow? MainWindow { get; set; }
-    
+    // public MainWindow? MainWindow { get; set; }
+
     private float _scale = 1.0f;
     private ViewModelBase _currentViewModel = new LoginViewModel(authService);
+    private Size _physicalSize = new Size(300, 220);
 
     public ViewModelBase CurrentViewModel {
         get => _currentViewModel;
@@ -21,13 +23,23 @@ public partial class MainWindowViewModel(MatrixAuthenticationService authService
     public float Scale {
         get => _scale;
         set {
-            SetProperty(ref _scale, (float)Math.Round(value, 2));
-            OnPropertyChanged(nameof(ChildTargetWidth));
-            OnPropertyChanged(nameof(ChildTargetHeight));
+            if (SetProperty(ref _scale, (float)Math.Round(value, 2))) {
+                OnPropertyChanged(nameof(ChildTargetWidth));
+                OnPropertyChanged(nameof(ChildTargetHeight));
+            }
         }
     }
-    public int ChildTargetWidth => (int)(MainWindow?.Width / Scale ?? 1);
-    public int ChildTargetHeight => (int)(MainWindow?.Height / Scale ?? 1);
 
-    
+    public int ChildTargetWidth => (int)(PhysicalSize.Width / Scale);
+    public int ChildTargetHeight => (int)(PhysicalSize.Height / Scale);
+
+    public Size PhysicalSize {
+        get => _physicalSize;
+        set {
+            if (SetProperty(ref _physicalSize, value)) {
+                OnPropertyChanged(nameof(ChildTargetWidth));
+                OnPropertyChanged(nameof(ChildTargetHeight));
+            }
+        }
+    }
 }

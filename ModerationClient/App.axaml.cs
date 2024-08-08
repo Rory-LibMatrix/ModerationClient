@@ -2,7 +2,6 @@ using System;
 using System.IO;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Data.Core;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using LibMatrix.Services;
@@ -13,18 +12,12 @@ using Microsoft.Extensions.Hosting;
 using ModerationClient.Services;
 using ModerationClient.ViewModels;
 using ModerationClient.Views;
+using ModerationClient.Views.MainWindow;
 
 namespace ModerationClient;
 
 public partial class App : Application {
-    /// <summary>
-    /// Gets the current <see cref="App"/> instance in use
-    /// </summary>
-    public new static App Current => (App)Application.Current;
-
-    /// <summary>
-    /// Gets the <see cref="IServiceProvider"/> instance to resolve application services.
-    /// </summary>
+    public new static App Current => Application.Current as App ?? throw new InvalidOperationException("Application.Current is null");
     public IServiceProvider Services => Host.Services;
 
     public IHost Host { get; private set; }
@@ -38,16 +31,10 @@ public partial class App : Application {
         var builder = Microsoft.Extensions.Hosting.Host.CreateApplicationBuilder(Environment.GetCommandLineArgs());
         builder.Services.AddTransient<MainWindowViewModel>();
         ConfigureServices(builder.Services);
-        // builder.Services.AddHostedService<HostedBackgroundService>();
 
         Host = builder.Build();
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop) {
-            // Line below is needed to remove Avalonia data validation.
-            // Without this line you will get duplicate validations from both Avalonia and CT
             BindingPlugins.DataValidators.RemoveAt(0);
-            // desktop.MainWindow = new MainWindow {
-                // DataContext = Host.Services.GetRequiredService<MainWindowViewModel>()
-            // };
             desktop.MainWindow = Host.Services.GetRequiredService<MainWindow>();
             desktop.Exit += (sender, args) => {
                 Host.StopAsync(TimeSpan.FromSeconds(5)).GetAwaiter().GetResult();
@@ -59,19 +46,16 @@ public partial class App : Application {
         await Host.StartAsync();
     }
 
-    /// <summary>
-    /// Configures the services for the application.
-    /// </summary>
     private static IServiceProvider ConfigureServices(IServiceCollection services) {
         services.AddRoryLibMatrixServices(new() {
             AppName = "ModerationClient",
         });
-        services.AddSingleton<CommandLineConfiguration>();
+        services.AddSingleton<CommandLineConfiguration>(CommandLineConfiguration.FromProcessArgs());
         services.AddSingleton<MatrixAuthenticationService>();
         services.AddSingleton<ModerationClientConfiguration>();
 
-        services.AddSingleton<TieredStorageService>(x => {
-                var cmdLine = x.GetRequiredService<CommandLineConfiguration>();
+        services.AddSingleton<TieredStorageService>(s => {
+                var cmdLine = s.GetRequiredService<CommandLineConfiguration>();
                 return new TieredStorageService(
                     cacheStorageProvider: new FileStorageProvider(Directory.CreateTempSubdirectory($"modcli-{cmdLine.Profile}").FullName),
                     dataStorageProvider: new FileStorageProvider(Directory.CreateTempSubdirectory($"modcli-{cmdLine.Profile}").FullName)
@@ -79,12 +63,17 @@ public partial class App : Application {
             }
         );
 
-        // Register views
+        // Register windows
         services.AddSingleton<MainWindow>();
+        services.AddTransient<UserManagementWindow>();
+        
+        // Register views
         services.AddTransient<LoginView>();
         services.AddTransient<ClientView>();
+        
         // Register ViewModels
         services.AddTransient<ClientViewModel>();
+        services.AddTransient<UserManagementViewModel>();
 
         return services.BuildServiceProvider();
     }

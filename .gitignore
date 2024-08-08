@@ -1,19 +1,12 @@
+# Dotnet build outputs
 **/bin/
 **/obj/
-MatrixRoomUtils/
-MatrixRoomUtils.Web/wwwroot/MRU.tar.xz
-/src/
-*.tar.xz
-matrix-sync.json
-/patches/
-MatrixRoomUtils.Bot/bot_data/
-appsettings.Local*.json
-nixpkgs/
+
+# User files
 *.DotSettings.user
 *.patch
+/patches/
 
-test.tsv
-test-proxy.tsv
-homeservers.txt
-LoginPayload.txt
-LoginPayload.txt.old
+# Local files:
+appsettings.Local*.json
+.run/local/*.run.xml

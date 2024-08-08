@@ -8,13 +8,17 @@ using Microsoft.Extensions.Hosting;
 using ModerationClient.Services;
 using ModerationClient.ViewModels;
 
-namespace ModerationClient.Views;
+namespace ModerationClient.Views.MainWindow;
 
 public partial class MainWindow : Window {
     public MainWindow(CommandLineConfiguration cfg, MainWindowViewModel dataContext, IHostApplicationLifetime appLifetime) {
         InitializeComponent();
         DataContext = dataContext;
-        _ = dataContext.AuthService.LoadProfileAsync();
+        _ = dataContext.AuthService.LoadProfileAsync().ContinueWith(x => {
+            if (x.IsFaulted) {
+                Console.WriteLine("Failed to load profile: " + x.Exception);
+            }
+        });
         Console.WriteLine("mainwnd");
 #if DEBUG
         this.AttachDevTools(new DevToolsOptions() {
@@ -25,31 +29,43 @@ public partial class MainWindow : Window {
         PropertyChanged += (sender, args) => {
             // Console.WriteLine($"MainWindow PropertyChanged: {args.Property.Name} ({args.OldValue} -> {args.NewValue})");
             switch (args.Property.Name) {
-                case nameof(Height):
-                case nameof(Width): {
+                case nameof(ClientSize): {
                     if (DataContext is not MainWindowViewModel viewModel) {
-                        Console.WriteLine("WARN: MainWindowViewModel is null, ignoring height/width change!");
+                        Console.WriteLine("WARN: MainWindowViewModel is null, ignoring ClientSize change!");
                         return;
                     }
 
-                    // Console.WriteLine("height/width changed");
-                    viewModel.Scale = viewModel.Scale;
+                    viewModel.PhysicalSize = new Size(ClientSize.Width, ClientSize.Height - TopPanel.Bounds.Height);
                     break;
                 }
             }
         };
+
+        TopPanel.PropertyChanged += (_, args) => {
+            if (args.Property.Name == nameof(Visual.Bounds)) {
+                if (DataContext is not MainWindowViewModel viewModel) {
+                    Console.WriteLine("WARN: MainWindowViewModel is null, ignoring TopPanel.Bounds change!");
+                    return;
+                }
+
+                viewModel.PhysicalSize = new Size(ClientSize.Width, ClientSize.Height - TopPanel.Bounds.Height);
+            }
+        };
+
         dataContext.AuthService.PropertyChanged += (sender, args) => {
             if (args.PropertyName == nameof(MatrixAuthenticationService.IsLoggedIn)) {
                 if (dataContext.AuthService.IsLoggedIn) {
                     // dataContext.CurrentViewModel = new ClientViewModel(dataContext.AuthService);
                     dataContext.CurrentViewModel = App.Current.Host.Services.GetRequiredService<ClientViewModel>();
+                    var window = App.Current.Host.Services.GetRequiredService<UserManagementWindow>();
+                    window.Show();
                 }
                 else {
                     dataContext.CurrentViewModel = new LoginViewModel(dataContext.AuthService);
                 }
             }
         };
-        dataContext.MainWindow = this;
+
         dataContext.Scale = cfg.Scale;
         Width *= cfg.Scale;
         Height *= cfg.Scale;
@@ -84,11 +100,25 @@ public partial class MainWindow : Window {
                 viewModel.Scale = 5.0f;
             }
         }
-        else if (e.Key == Key.K && e.KeyModifiers == KeyModifiers.Control) {
-            if(viewModel.CurrentViewModel is ClientViewModel clientViewModel) {
-                Console.WriteLine("QuickSwitcher invoked");
+        else if (e.KeyModifiers == KeyModifiers.Control) {
+            if (e.Key == Key.K) {
+                if (viewModel.CurrentViewModel is ClientViewModel clientViewModel) {
+                    Console.WriteLine("QuickSwitcher invoked");
+                }
+                else Console.WriteLine("WARN: CurrentViewModel is not ClientViewModel, ignoring Quick Switcher");
             }
-            else Console.WriteLine("WARN: CurrentViewModel is not ClientViewModel, ignoring Quick Switcher");
+            else if (e.Key == Key.U ) {
+                Console.WriteLine("UserManagementWindow invoked");
+                var window = App.Current.Host.Services.GetRequiredService<UserManagementWindow>();
+                window.Show();
+            }
+            else if (e.Key == Key.F5) {
+                Console.WriteLine("Launching new process");
+                System.Diagnostics.Process.Start(System.Diagnostics.Process.GetCurrentProcess().MainModule?.FileName, Environment.GetCommandLineArgs());
+            }
+            else if (e.Key == Key.F9) {
+                
+            }
         }
     }
 }

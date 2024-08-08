@@ -37,12 +37,20 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Update="Views\LoginView.axaml.cs">
-        <DependentUpon>LoginWindow.axaml</DependentUpon>
+      <Compile Update="Views\UserManagementWindow.axaml.cs">
+        <DependentUpon>UserManagementWindow.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
-      <Compile Update="Views\ClientView.axaml.cs">
+      <Compile Update="Views\MainWindow\MainWindow.axaml.cs">
+        <DependentUpon>MainWindow.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\MainWindow\ClientView.axaml.cs">
         <DependentUpon>ClientView.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\MainWindow\LoginView.axaml.cs">
+        <DependentUpon>LoginView.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
     </ItemGroup>

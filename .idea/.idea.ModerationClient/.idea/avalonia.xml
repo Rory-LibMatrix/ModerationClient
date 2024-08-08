@@ -8,6 +8,8 @@
         <entry key="ModerationClient/Views/LoginView.axaml" value="ModerationClient/ModerationClient.csproj" />
         <entry key="ModerationClient/Views/LoginWindow.axaml" value="ModerationClient/ModerationClient.csproj" />
         <entry key="ModerationClient/Views/MainWindow.axaml" value="ModerationClient/ModerationClient.csproj" />
+        <entry key="ModerationClient/Views/MainWindow/NotificationPopupWindow.axaml" value="ModerationClient/ModerationClient.csproj" />
+        <entry key="ModerationClient/Views/UserManagementWindow.axaml" value="ModerationClient/ModerationClient.csproj" />
         <entry key="ModerationClient/Windows/LoginWindow.axaml" value="ModerationClient/ModerationClient.csproj" />
       </map>
     </option>
