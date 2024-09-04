@@ -1,20 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
-using ArcaneLibs.Collections;
 using ArcaneLibs.Extensions;
-using LibMatrix.EventTypes.Spec.State;
-using LibMatrix.Helpers;
 using LibMatrix.Homeservers;
 using LibMatrix.Homeservers.ImplementationDetails.Synapse.Models.Responses;
-using LibMatrix.Responses;
-using MatrixUtils.Abstractions;
 using Microsoft.Extensions.Logging;
 using ModerationClient.Services;
 
@@ -51,6 +41,7 @@ public partial class UserManagementViewModel : ViewModelBase {
         }
 
         await foreach (var user in synapse.Admin.SearchUsersAsync(chunkLimit: 100)) {
+            Program.Beep(250, 1);
             Console.WriteLine("USERMANAGER GOT USER: " + user.ToJson(indent:false, ignoreNull: true));
             Users.Add(JsonSerializer.Deserialize<User>(user.ToJson())!);
         }
@@ -58,6 +49,6 @@ public partial class UserManagementViewModel : ViewModelBase {
     }
 }
 
-public class User : AdminUserListResult.AdminUserListResultUser {
+public class User : SynapseAdminUserListResult.SynapseAdminUserListResultUser {
     
 }

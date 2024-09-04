@@ -1,19 +1,28 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using ArcaneLibs.Extensions;
-using LibMatrix.Extensions;
 using LibMatrix.Interfaces.Services;
-using Microsoft.Extensions.Logging;
 
-namespace MatrixUtils.Abstractions;
+namespace ModerationClient.Services;
 
 public class FileStorageProvider : IStorageProvider {
-    private readonly ILogger<FileStorageProvider> _logger;
+    // private readonly ILogger<FileStorageProvider> _logger;
+    private static readonly JsonSerializerOptions Options = new() {
+        WriteIndented = true
+    };
+    
+    private static readonly EnumerationOptions EnumOpts = new EnumerationOptions() {
+        MatchType = MatchType.Simple,
+        AttributesToSkip = FileAttributes.None,
+        IgnoreInaccessible = false,
+        RecurseSubdirectories = true
+    };
 
     public string TargetPath { get; }
 
@@ -30,25 +39,58 @@ public class FileStorageProvider : IStorageProvider {
         }
     }
 
-    public async Task SaveObjectAsync<T>(string key, T value) => await File.WriteAllTextAsync(Path.Join(TargetPath, key), value?.ToJson());
+    public async Task SaveObjectAsync<T>(string key, T value) {
+        EnsureContainingDirectoryExists(GetFullPath(key));
+        await using var fileStream = File.Create(GetFullPath(key));
+        await JsonSerializer.SerializeAsync(fileStream, value, Options);
+    }
 
     [RequiresUnreferencedCode("This API uses reflection to deserialize JSON")]
-    public async Task<T?> LoadObjectAsync<T>(string key) => JsonSerializer.Deserialize<T>(await File.ReadAllTextAsync(Path.Join(TargetPath, key)));
+    public async Task<T?> LoadObjectAsync<T>(string key) {
+        await using var fileStream = File.OpenRead(GetFullPath(key));
+        return JsonSerializer.Deserialize<T>(fileStream);
+    }
 
-    public Task<bool> ObjectExistsAsync(string key) => Task.FromResult(File.Exists(Path.Join(TargetPath, key)));
+    public Task<bool> ObjectExistsAsync(string key) => Task.FromResult(File.Exists(GetFullPath(key)));
 
-    public Task<List<string>> GetAllKeysAsync() => Task.FromResult(Directory.GetFiles(TargetPath).Select(Path.GetFileName).ToList());
+    public async Task<IEnumerable<string>> GetAllKeysAsync() {
+        var sw = Stopwatch.StartNew();
+        // var result = Directory.EnumerateFiles(TargetPath, "*", SearchOption.AllDirectories)
+        var result = Directory.EnumerateFiles(TargetPath, "*", EnumOpts)
+            .Select(s => s.Replace(TargetPath, "").TrimStart('/'));
+        // Console.WriteLine($"GetAllKeysAsync got {result.Count()} results in {sw.ElapsedMilliseconds}ms");
+        // Environment.Exit(0);
+        return result;
+    }
 
     public Task DeleteObjectAsync(string key) {
-        File.Delete(Path.Join(TargetPath, key));
+        File.Delete(GetFullPath(key));
         return Task.CompletedTask;
     }
 
     public async Task SaveStreamAsync(string key, Stream stream) {
-        Directory.CreateDirectory(Path.GetDirectoryName(Path.Join(TargetPath, key)) ?? throw new InvalidOperationException());
-        await using var fileStream = File.Create(Path.Join(TargetPath, key));
+        EnsureContainingDirectoryExists(GetFullPath(key));
+        await using var fileStream = File.Create(GetFullPath(key));
         await stream.CopyToAsync(fileStream);
     }
 
-    public Task<Stream?> LoadStreamAsync(string key) => Task.FromResult<Stream?>(File.Exists(Path.Join(TargetPath, key)) ? File.OpenRead(Path.Join(TargetPath, key)) : null);
+    public Task<Stream?> LoadStreamAsync(string key) => Task.FromResult<Stream?>(File.Exists(GetFullPath(key)) ? File.OpenRead(GetFullPath(key)) : null);
+
+    public Task CopyObjectAsync(string sourceKey, string destKey) {
+        EnsureContainingDirectoryExists(GetFullPath(destKey));
+        File.Copy(GetFullPath(sourceKey), GetFullPath(destKey));
+        return Task.CompletedTask;
+    }
+
+    public Task MoveObjectAsync(string sourceKey, string destKey) {
+        EnsureContainingDirectoryExists(GetFullPath(destKey));
+        File.Move(GetFullPath(sourceKey), GetFullPath(destKey));
+        return Task.CompletedTask;
+    }
+
+    private string GetFullPath(string key) => Path.Join(TargetPath, key);
+
+    private void EnsureContainingDirectoryExists(string path) {
+        Directory.CreateDirectory(Path.GetDirectoryName(path) ?? throw new InvalidOperationException());
+    }
 }

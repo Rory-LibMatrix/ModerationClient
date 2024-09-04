@@ -1,11 +1,11 @@
 using System;
 using System.IO;
+using System.Threading;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using LibMatrix.Services;
-using MatrixUtils.Abstractions;
 using MatrixUtils.Desktop;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -29,7 +29,6 @@ public partial class App : Application {
     // ReSharper disable once AsyncVoidMethod
     public override async void OnFrameworkInitializationCompleted() {
         var builder = Microsoft.Extensions.Hosting.Host.CreateApplicationBuilder(Environment.GetCommandLineArgs());
-        builder.Services.AddTransient<MainWindowViewModel>();
         ConfigureServices(builder.Services);
 
         Host = builder.Build();
@@ -47,10 +46,11 @@ public partial class App : Application {
     }
 
     private static IServiceProvider ConfigureServices(IServiceCollection services) {
+        var cfg = CommandLineConfiguration.FromProcessArgs();
         services.AddRoryLibMatrixServices(new() {
             AppName = "ModerationClient",
         });
-        services.AddSingleton<CommandLineConfiguration>(CommandLineConfiguration.FromProcessArgs());
+        services.AddSingleton<CommandLineConfiguration>(cfg);
         services.AddSingleton<MatrixAuthenticationService>();
         services.AddSingleton<ModerationClientConfiguration>();
 
@@ -72,8 +72,14 @@ public partial class App : Application {
         services.AddTransient<ClientView>();
         
         // Register ViewModels
+        services.AddTransient<MainWindowViewModel>();
         services.AddTransient<ClientViewModel>();
         services.AddTransient<UserManagementViewModel>();
+
+        if (cfg.TestConfiguration is not null) {
+            services.AddSingleton(cfg.TestConfiguration);
+            services.AddHostedService<TestRunner>();
+        }
 
         return services.BuildServiceProvider();
     }

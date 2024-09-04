@@ -1,16 +1,12 @@
-using System;
 using System.IO;
 using System.Text.Json;
-using System.Threading;
 using System.Threading.Tasks;
 using ArcaneLibs;
 using ArcaneLibs.Extensions;
-using Avalonia.Controls.Diagnostics;
 using LibMatrix;
 using LibMatrix.Homeservers;
 using LibMatrix.Responses;
 using LibMatrix.Services;
-using MatrixUtils.Desktop;
 using Microsoft.Extensions.Logging;
 
 namespace ModerationClient.Services;

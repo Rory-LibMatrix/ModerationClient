@@ -1,12 +1,12 @@
-# Dotnet build outputs
+# Regular dotnet things
 **/bin/
 **/obj/
+**/*.[Dd]ot[Ss]ettings.[Uu]ser
+**/BenchmarkDotNet.Artifacts/
 
-# User files
-*.DotSettings.user
-*.patch
+# Local files
 /patches/
-
-# Local files:
 appsettings.Local*.json
+appservice.yaml
+appservice.json
 .run/local/*.run.xml

@@ -1,12 +1,12 @@
 using System;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
 using ModerationClient.ViewModels;
 
 namespace ModerationClient.Views;
 
 public partial class LoginView : UserControl {
+    private LoginViewModel? ViewModel => DataContext as LoginViewModel;
     public LoginView() {
         InitializeComponent();
     }

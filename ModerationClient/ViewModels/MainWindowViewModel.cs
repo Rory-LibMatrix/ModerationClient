@@ -1,7 +1,6 @@
 ﻿using System;
 using Avalonia;
 using ModerationClient.Services;
-using ModerationClient.Views;
 
 namespace ModerationClient.ViewModels;
 
@@ -9,10 +8,10 @@ public partial class MainWindowViewModel(MatrixAuthenticationService authService
     // public MainWindow? MainWindow { get; set; }
 
     private float _scale = 1.0f;
-    private ViewModelBase _currentViewModel = new LoginViewModel(authService);
+    private ViewModelBase? _currentViewModel = null;
     private Size _physicalSize = new Size(300, 220);
 
-    public ViewModelBase CurrentViewModel {
+    public ViewModelBase? CurrentViewModel {
         get => _currentViewModel;
         set => SetProperty(ref _currentViewModel, value);
     }

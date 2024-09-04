@@ -47,6 +47,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArcaneLibs.UsageTest", "Lib
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArcaneLib.Tests", "LibMatrix\ArcaneLibs\ArcaneLib.Tests\ArcaneLib.Tests.csproj", "{046D35DF-E1F2-41DA-94D3-80CF960C100A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{BC6C910C-79C7-42D3-ABD9-8B9ED9121AE5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FilesystemBenchmark", "FilesystemBenchmark\FilesystemBenchmark.csproj", "{6F3FA65D-5661-4840-B421-BF64CD4DBBD2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -129,6 +133,14 @@ Global
 		{046D35DF-E1F2-41DA-94D3-80CF960C100A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{046D35DF-E1F2-41DA-94D3-80CF960C100A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{046D35DF-E1F2-41DA-94D3-80CF960C100A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC6C910C-79C7-42D3-ABD9-8B9ED9121AE5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC6C910C-79C7-42D3-ABD9-8B9ED9121AE5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC6C910C-79C7-42D3-ABD9-8B9ED9121AE5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC6C910C-79C7-42D3-ABD9-8B9ED9121AE5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F3FA65D-5661-4840-B421-BF64CD4DBBD2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F3FA65D-5661-4840-B421-BF64CD4DBBD2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F3FA65D-5661-4840-B421-BF64CD4DBBD2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F3FA65D-5661-4840-B421-BF64CD4DBBD2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{6FDD7CD7-4526-410B-858D-35FA8292317C} = {C5771E60-0DA8-42AC-B54B-94C91B5B719B}
@@ -154,7 +166,7 @@ Global
 		{046D35DF-E1F2-41DA-94D3-80CF960C100A} = {D7A5A7D3-4D9E-4B15-9C48-5E75A91483CF}
 	EndGlobalSection
 	GlobalSection(RiderSharedRunConfigurations) = postSolution
-		File = .run\local\ModerationClient (Apothecary) test.run.xml
 		File = .run\local\ModerationClient (Apothecary).run.xml
+		File = .run\local\ModerationClient (matrix.org).run.xml
 	EndGlobalSection
 EndGlobal

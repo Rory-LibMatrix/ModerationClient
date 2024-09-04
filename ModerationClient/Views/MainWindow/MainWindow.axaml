@@ -17,23 +17,28 @@
     <!-- </Design.DataContext> -->
 
     <Grid RowDefinitions="Auto, *">
-        <Grid Grid.Row="0" ColumnDefinitions="Auto, *, Auto" x:Name="TopPanel">
-            <StackPanel Orientation="Horizontal" Grid.Column="0">
-                <Label Content="{CompiledBinding Scale}" />
-                <Label>x</Label>
-                <Rectangle Width="32" />
-                <Label Content="{CompiledBinding ChildTargetWidth}" />
-                <Label>x</Label>
-                <Label Content="{CompiledBinding ChildTargetHeight}" />
-            </StackPanel>
-            <Label Grid.Column="2">Press '?' for keybinds</Label>
-        </Grid>
+
         <Viewbox Grid.Row="1">
-            <ContentControl
-                Width="{CompiledBinding ChildTargetWidth}"
-                Background="#222222"
-                Height="{CompiledBinding ChildTargetHeight}"
-                Content="{CompiledBinding CurrentViewModel}" />
+            <Grid RowDefinitions="Auto, *"
+                  Background="#202020"
+                  Width="{CompiledBinding ChildTargetWidth}"
+                  Height="{CompiledBinding ChildTargetHeight}">
+                <Grid Grid.Row="0" ColumnDefinitions="Auto, *, Auto" x:Name="TopPanel" Background="#000000">
+                    <StackPanel Orientation="Horizontal" Grid.Column="0">
+                        <Label>[F1 -]</Label>
+                        <Label Content="{CompiledBinding Scale}" />
+                        <Label>x</Label>
+                        <Label>[+ F2]</Label>
+                        <Rectangle Width="32" />
+                        <Label>VRes =</Label>
+                        <Label Content="{CompiledBinding ChildTargetWidth}" />
+                        <Label>x</Label>
+                        <Label Content="{CompiledBinding ChildTargetHeight}" />
+                    </StackPanel>
+                    <Label Grid.Column="2">Press '?' for keybinds</Label>
+                </Grid>
+                <ContentControl Grid.Row="1" Content="{CompiledBinding CurrentViewModel}" />
+            </Grid>
         </Viewbox>
     </Grid>
 </Window>
